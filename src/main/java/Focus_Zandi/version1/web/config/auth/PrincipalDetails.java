@@ -8,23 +8,36 @@ package Focus_Zandi.version1.web.config.auth;
 // 유저 오브젝트 타입 => UserDetails 타입 객체
 
 import Focus_Zandi.version1.domain.Member;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
+@Getter
 // Security Session => Authentication => UserDetails(PrincipalDetails)
-public class PrincipalDetails implements UserDetails {
+public class PrincipalDetails implements UserDetails, OAuth2User {
 
     private Member member; // 콤포지션
+    private Map<String, Object> attributes;
 
+    //일반 로그인
     public PrincipalDetails(Member member) {
         this.member = member;
     }
 
-    public Member getMember() {
-        return member;
+    //OAuth 로그인
+    public PrincipalDetails(Member member, Map<String, Object> attributes) {
+        this.member = member;
+        this.attributes = attributes;
+    }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return attributes;
     }
 
     //해당 유저의 권한 리턴하는 곳
@@ -68,5 +81,10 @@ public class PrincipalDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public String getName() {
+        return null;
     }
 }

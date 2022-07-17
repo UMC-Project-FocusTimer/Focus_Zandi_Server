@@ -2,15 +2,19 @@ package Focus_Zandi.version1.domain;
 
 import Focus_Zandi.version1.domain.dto.MemberRegisterDto;
 import Focus_Zandi.version1.domain.dto.MemberUpdateDto;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 
 @Getter @Setter
+@RequiredArgsConstructor
 @Entity
 @Table(name = "Members")
 public class Member {
@@ -20,17 +24,15 @@ public class Member {
     @Column(name = "MEMBER_ID")
     private long id;
 
-    @Column(nullable = false, length = 100, unique = true)
+    @Column(nullable = false, unique = true)
     private String username;
-
-    @Column(nullable = true, length = 100) //123456 => 해쉬 (비밀번호 암호화)
+    @Column(nullable = false)
     private String password;
-    @Column(nullable = true, length = 50)
+
     private String email;
 
-    @Column(nullable = false, length = 100, unique = true)
+    @Column(nullable = false)
     private String name;
-
     @Column(nullable = false)
     private String role;
 
@@ -39,15 +41,37 @@ public class Member {
     private int age;
 
     private String occupation;
-    private String place;
+    private String workPlace;
+
+    @Column(nullable = false)
+    private String provider;
+    @Column(nullable = false)
+    private String providerId;
 
     @CreationTimestamp
-    private Timestamp createDate;
+    private Timestamp createdAt;
+    @UpdateTimestamp
+    private Timestamp updatedAt;
+
+    @Builder
+    public Member(String username, String password, String email, String name, String role, String gender, String dob, int age, String occupation, String workPlace, String provider, String providerId) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.name = name;
+        this.role = role;
+        this.gender = gender;
+        this.dob = dob;
+        this.age = age;
+        this.occupation = occupation;
+        this.workPlace = workPlace;
+        this.provider = provider;
+        this.providerId = providerId;
+    }
 
     // 비즈니스 로직//
 
     public static Member createMember(MemberRegisterDto registerDto) {
-        System.out.println("Member.createMember");
         String dob = registerDto.getDob();
         int age = calcAge(dob);
         Member member = new Member();
@@ -63,7 +87,7 @@ public class Member {
         member.setAge(age);
 
         member.setOccupation(registerDto.getOccupation());
-        member.setPlace(registerDto.getPlace());
+        member.setWorkPlace(registerDto.getPlace());
         member.setRole("ROLE_USER");
 
         return member;
@@ -112,7 +136,7 @@ public class Member {
             member.setOccupation(updateDto.getOccupation());
         }
         if (updateDto.getPlace() != null) {
-            member.setPlace(updateDto.getPlace());
+            member.setWorkPlace(updateDto.getPlace());
         }
     }
 }

@@ -12,21 +12,24 @@ import java.util.List;
 @Table(name = "Records")
 public class Records {
 
-    @OneToOne
+    @ManyToOne // 연관관계가 이게 맞나
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
-
-//    @Column(name = "MEMBER_ID")
-//    private long memberId;
 
     @Id @GeneratedValue
     @Column(name = "RECORD_ID")
     private long recordId;
 
+    @Column(nullable = false)
     private int brokenCounter;
+
+    @Column(nullable = false)
     private int maxConcentrationTime;
+
+    @Column(nullable = false)
     private int total_time;
 
+    @Column(nullable = false)
     private String timeStamp;
 
     // 비즈니스 로직 //
