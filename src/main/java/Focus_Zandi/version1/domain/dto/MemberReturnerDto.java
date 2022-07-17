@@ -24,6 +24,6 @@ public class MemberReturnerDto {
         this.gender = member.getGender();
         this.dob = member.getDob();
         this.occupation = member.getOccupation();
-        this.place = member.getPlace();
+        this.place = member.getWorkPlace();
     }
 }
