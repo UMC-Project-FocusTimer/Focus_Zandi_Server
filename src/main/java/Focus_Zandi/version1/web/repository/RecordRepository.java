@@ -19,24 +19,23 @@ public class RecordRepository {
     private final EntityManager em;
 
     //레코드 Dto를 받아서, 이를 Records로 변환하고 db에 저장
-    public Records save(Member member, RecordsDto recordsDto) {
-        Records records = Records.createRecords(member, recordsDto);
+    public Records save(Records records) {
         em.persist(records);
         return records;
     }
 
-    public Records findRecordByMemberId(long memberId) {
-//        Records records = em.find(Records.class, memberId); // 이거는 pk만 가능
-        List<Records> resultList = em.createQuery("select r from Records r where r.member = :memberId", Records.class)
-                .setParameter("memberId", memberId)
-                .getResultList();
-        for (Records records : resultList) {
-            long recordId = records.getRecordId();
-            System.out.println("recordId = " + recordId);
-        }
-        Records records = resultList.get(0);
-        return records;
-    }
+//    public Records findRecordByMemberId(long memberId) {
+////        Records records = em.find(Records.class, memberId); // 이거는 pk만 가능
+//        List<Records> resultList = em.createQuery("select r from Records r where r.member = :memberId", Records.class)
+//                .setParameter("memberId", memberId)
+//                .getResultList();
+//        for (Records records : resultList) {
+//            long recordId = records.getRecordId();
+//            System.out.println("recordId = " + recordId);
+//        }
+//        Records records = resultList.get(0);
+//        return records;
+//    }
 
     public Records findRecordByTimeStamp(Member member, String timeStamp) {
         List<Records> resultList = em.createQuery("select r from Records r where r.member = :member", Records.class)
@@ -46,7 +45,6 @@ public class RecordRepository {
             String valueTimeStamp = value.getTimeStamp();
             String cut = valueTimeStamp.substring(0, 10);
             if ((value.getMember().getId() == member.getId()) && (cut.equals(timeStamp))) {
-                String timeStamp1 = value.getTimeStamp();
                 return value;
             }
         }

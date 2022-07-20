@@ -2,6 +2,7 @@ package Focus_Zandi.version1.web.config;
 
 import Focus_Zandi.version1.web.config.auth.OAuthSuccessHandler;
 import Focus_Zandi.version1.web.config.auth.PrincipalOAuth2UserService;
+import Focus_Zandi.version1.web.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 @RequiredArgsConstructor
 public class SecurityAuthConfig extends WebSecurityConfigurerAdapter {
+
+    private final MemberRepository memberRepository;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -38,21 +41,21 @@ public class SecurityAuthConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/**").authenticated()
                 .antMatchers("/manger/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
                 .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
-                .anyRequest().permitAll()
+                .anyRequest().authenticated()
                 .and()
                 .logout()
                 .clearAuthentication(true)
                 .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID");
-//                .and()
-//                .sessionManagement()
-//                .maximumSessions(1);
+                .deleteCookies("JSESSIONID")
+                .and()
+                .sessionManagement()
+                .maximumSessions(1);
         http
                 .formLogin()
                 .loginProcessingUrl("/loginProc")
                 .and()
                 .oauth2Login()
-                .successHandler(new OAuthSuccessHandler())
+                .successHandler(new OAuthSuccessHandler(memberRepository))
                 .userInfoEndpoint()// 후처리 시작
                 .userService(principalOAuth2UserService); // 서비스에서 후처리함
 

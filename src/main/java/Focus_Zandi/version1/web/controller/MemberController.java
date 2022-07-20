@@ -1,6 +1,7 @@
 package Focus_Zandi.version1.web.controller;
 
 import Focus_Zandi.version1.domain.Member;
+import Focus_Zandi.version1.domain.dto.DetailsDto;
 import Focus_Zandi.version1.domain.dto.FolloweeNameDto;
 import Focus_Zandi.version1.domain.dto.MemberReturnerDto;
 import Focus_Zandi.version1.web.service.MemberService;
@@ -24,20 +25,14 @@ public class MemberController {
     public MemberReturnerDto loginHandler(HttpServletResponse response, HttpServletRequest request) throws IOException {
         String username = getUsername(request);
         Member member = memberService.findMemberByUserName(username);
-        MemberReturnerDto memberReturnerDto = new MemberReturnerDto(member);
+        MemberReturnerDto memberReturnerDto = new MemberReturnerDto(member, member.getMemberDetails());
         return memberReturnerDto;
     }
 
-    @GetMapping("/showMember")
+    @GetMapping("/showMember") // 멤버 객체 내용 전체 삭제 예정
     public Member showMemberV2(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String username = getUsername(request);
 
-        return memberService.findMemberByUserName(username);
-    }
-
-    @GetMapping("/user")
-    public Member getMember(HttpServletRequest request) {
-        String username = getUsername(request);
         return memberService.findMemberByUserName(username);
     }
 
@@ -53,10 +48,14 @@ public class MemberController {
         return response.getStatus();
     }
 
+    @PostMapping("/register")
+    public int getDetails(@RequestBody DetailsDto detailsDto, HttpServletRequest request, HttpServletResponse response) {
+        memberService.join(detailsDto, getUsername(request));
+        return response.getStatus();
+    }
+
     private String getUsername (HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        System.out.println("session = " + session);
-
         SecurityContextImpl context = (SecurityContextImpl)session.getAttribute("SPRING_SECURITY_CONTEXT");
         return context.getAuthentication().getName();
     }
