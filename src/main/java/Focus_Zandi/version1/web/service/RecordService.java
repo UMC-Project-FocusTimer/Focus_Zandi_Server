@@ -19,14 +19,12 @@ public class RecordService {
 
     public void save(String username, RecordsDto recordsDto) {
         Member member = memberRepository.findByUsername(username);
-        recordRepository.save(member, recordsDto);
+        Records records = Records.createRecords(member, recordsDto);
+        recordRepository.save(records);
     }
 
-    public Records findRecordByMemberId(long memberId) {
-        return recordRepository.findRecordByMemberId(memberId);
-    }
-
-    public Records findRecordByTimeStamp(Member member, String timeStamp) {
-        return recordRepository.findRecordByTimeStamp(member, timeStamp);
+    public Records findRecordByTimeStamp(String username, String date) {
+        Member member = memberRepository.findByUsername(username);
+        return recordRepository.findRecordByTimeStamp(member, date);
     }
 }

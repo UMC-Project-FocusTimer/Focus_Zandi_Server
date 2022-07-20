@@ -1,6 +1,7 @@
 package Focus_Zandi.version1.web.config.auth;
 
 import Focus_Zandi.version1.domain.Member;
+import Focus_Zandi.version1.domain.MemberDetails;
 import Focus_Zandi.version1.web.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -40,7 +41,7 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
         String username = provider + "_" + providerId;
         String password = passwordEncoder.encode("CommonPassword");
         String email = oAuth2User.getAttribute("email");
-        String role = "ROLE_USER";
+        MemberDetails memberDetails = new MemberDetails();
 
         Member memberEntity = memberRepository.findByUsername(username);
         if(memberEntity == null) {
@@ -50,7 +51,7 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
                     .name(name)
                     .password(password)
                     .email(email)
-                    .role(role)
+                    .memberDetails(memberDetails)
                     .provider(provider)
                     .providerId(providerId)
                     .build();

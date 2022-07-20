@@ -1,7 +1,10 @@
 package Focus_Zandi.version1.web.repository;
 
 import Focus_Zandi.version1.domain.Member;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import javax.persistence.EntityManager;
 
 public interface MemberRepository extends JpaRepository<Member, Integer> {
 
