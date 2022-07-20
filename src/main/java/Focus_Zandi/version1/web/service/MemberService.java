@@ -2,11 +2,11 @@ package Focus_Zandi.version1.web.service;
 
 import Focus_Zandi.version1.domain.Followers;
 import Focus_Zandi.version1.domain.Member;
-import Focus_Zandi.version1.domain.dto.MemberRegisterDto;
+import Focus_Zandi.version1.domain.MemberDetails;
+import Focus_Zandi.version1.domain.dto.DetailsDto;
 import Focus_Zandi.version1.web.repository.FollowersRepository;
 import Focus_Zandi.version1.web.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,14 +17,15 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final FollowersRepository followersRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
 
-    public void join(MemberRegisterDto registerDto) {
-        Member member = Member.createMember(registerDto);
-        validateDuplicateMember(member);
-        String encode = passwordEncoder.encode(member.getPassword());
-        member.setPassword(encode); // 비밀번호 인코딩 후 저장
-        memberRepository.save(member);
+    public void join(DetailsDto detailsDto, String username) {
+        MemberDetails memberDetails = memberRepository.findByUsername(username).getMemberDetails();
+
+        memberDetails.setDob(detailsDto.getDob());
+        memberDetails.setGender(detailsDto.getGender());
+        memberDetails.setOccupation(detailsDto.getOccupation());
+        memberDetails.setWorkPlace(detailsDto.getWorkPlace());
+        memberDetails.setAge(MemberDetails.calcAge(detailsDto.getDob()));
     }
 
     public Member findMemberByUserName(String name) {
@@ -40,6 +41,11 @@ public class MemberService {
         followersRepository.makeFollow(followerShip);
     }
 
+    public void makeUnFollow(String followeeName, String username) {
+        long followeeId = memberRepository.findByUsername(followeeName).getId();
+        Member follower = memberRepository.findByUsername(username);
+        followersRepository.unFollow(followeeId, follower);
+    }
 
     //추후 수정
 //    public Member updateMember(MemberUpdateDto updateDto, long memberId) {
@@ -54,9 +60,4 @@ public class MemberService {
         }
     }
 
-    public void makeUnFollow(String followeeName, String username) {
-        long followeeId = memberRepository.findByUsername(followeeName).getId();
-        Member follower = memberRepository.findByUsername(username);
-        followersRepository.unFollow(followeeId, follower);
-    }
 }

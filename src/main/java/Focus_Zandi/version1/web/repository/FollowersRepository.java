@@ -14,7 +14,7 @@ public class FollowersRepository {
 
     private final EntityManager em;
 
-    public void makeFollow(Followers followers) {;
+    public void makeFollow(Followers followers) {
         em.persist(followers);
     }
 

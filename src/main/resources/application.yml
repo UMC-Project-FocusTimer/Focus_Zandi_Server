@@ -20,18 +20,6 @@ spring:
             scope:
               - email
               - profile
-#          google:
-#            client-id: 154711632031-oecb2lmqlvgj77qnhca7d13rqsv6o1if.apps.googleusercontent.com
-#            ios-url-schema: com.googleusercontent.apps.154711632031-oecb2lmqlvgj77qnhca7d13rqsv6o1if
-#            scope:
-#              - email
-#              - profile
-#          google:
-#            client-id: 154711632031-h99em73spmhv447k607sane3rr6c07io.apps.googleusercontent.com
-#            client-secret: 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
-#            scope:
-#              - email
-#              - profile
 
 #server:
 #  servlet:

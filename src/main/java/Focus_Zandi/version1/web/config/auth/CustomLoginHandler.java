@@ -13,7 +13,6 @@ public class CustomLoginHandler implements AuthenticationSuccessHandler {
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        System.out.println("CustomLoginHandler.onAuthenticationSuccess");
         HttpSession session = request.getSession();
         session.setAttribute("username", authentication.getName());
         response.sendRedirect("/");
