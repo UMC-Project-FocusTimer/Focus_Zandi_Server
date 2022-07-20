@@ -4,6 +4,7 @@ import Focus_Zandi.version1.domain.Followers;
 import Focus_Zandi.version1.domain.Member;
 import Focus_Zandi.version1.domain.MemberDetails;
 import Focus_Zandi.version1.domain.dto.DetailsDto;
+import Focus_Zandi.version1.domain.dto.MemberRegisterDto;
 import Focus_Zandi.version1.web.repository.FollowersRepository;
 import Focus_Zandi.version1.web.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -59,5 +60,6 @@ public class MemberService {
             throw new IllegalArgumentException("이미 존재하는 회원입니다.");
         }
     }
+
 
 }

@@ -1,9 +1,9 @@
 spring:
   datasource:
-    url: jdbc:mysql://zandi-test.ckdzr4n8ihbu.ap-northeast-2.rds.amazonaws.com:3306/zandiTime
+    url: jdbc:mysql://zanditime.cjntcovet9jv.ap-northeast-2.rds.amazonaws.com:3306/zandiTimeTest
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: leech1211
-    password: chang1211
+    username: master
+    password: zandi1234
   jpa:
     open-in-view: false
     generate-ddl: true

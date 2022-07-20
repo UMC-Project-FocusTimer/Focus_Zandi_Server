@@ -1,12 +1,8 @@
 package Focus_Zandi.version1.web.service;
 
-import Focus_Zandi.version1.domain.Member;
-import Focus_Zandi.version1.web.repository.DBMemberRepository;
 import Focus_Zandi.version1.web.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
