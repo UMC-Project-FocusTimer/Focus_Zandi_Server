@@ -7,12 +7,15 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
 public class FollowersRepository {
 
     private final EntityManager em;
+    private final MemberRepository memberRepository;
 
     public void makeFollow(Followers followers) {
         em.persist(followers);
@@ -24,5 +27,19 @@ public class FollowersRepository {
                 .setParameter("followeeId", followeeId)
                 .setParameter("follower", follower);
         query.executeUpdate();
+    }
+
+    public List<String> findFollowers(Member member) {
+        List<Long> list = em.createQuery("select f.followeeId from Followers f where f.member = :member", Long.class)
+                .setParameter("member", member)
+                .getResultList();
+
+        List<String> followedMembers = new ArrayList<>();
+
+        for (Long aLong : list) {
+            Member member1 = memberRepository.findById(aLong);
+            followedMembers.add(member1.getUsername());
+        }
+        return followedMembers;
     }
 }

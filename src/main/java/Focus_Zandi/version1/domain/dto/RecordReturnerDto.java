@@ -16,6 +16,6 @@ public class RecordReturnerDto {
         this.brokenCounter = records.getBrokenCounter();
         this.maxConcentrationTime = records.getMaxConcentrationTime();
         this.total_time = records.getTotal_time();
-        this.timeStamp = records.getTimeStamp();
+        this.timeStamp = records.getYear() + "-" + records.getMonth() + "-" + records.getDay();
     }
 }

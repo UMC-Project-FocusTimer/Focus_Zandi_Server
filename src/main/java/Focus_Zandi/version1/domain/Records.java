@@ -30,14 +30,22 @@ public class Records {
     private int total_time;
 
     @Column(nullable = false)
-    private String timeStamp;
+    private String year;
+
+    @Column(nullable = false)
+    private String month;
+
+    @Column(nullable = false)
+    private String day;
 
     // 비즈니스 로직 //
     public static Records createRecords(Member member, RecordsDto recordsDto) {
         Records records = new Records();
         records.setMember(member);
         List<Integer> dataHolder = recordsDto.getConcentratedTime();
-        records.setTimeStamp(recordsDto.getTimeStamp());
+        records.setYear(recordsDto.getTimeStamp().substring(0,4));
+        records.setMonth(recordsDto.getTimeStamp().substring(5,7));
+        records.setDay(recordsDto.getTimeStamp().substring(8,10));
 
         if (dataHolder.isEmpty()) {
             // 작동할 일이 있을까? (validation 추가하면 없애도 될듯0

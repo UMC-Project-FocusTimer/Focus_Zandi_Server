@@ -1,8 +1,7 @@
 package Focus_Zandi.version1.web.controller;
 
 import Focus_Zandi.version1.domain.Records;
-import Focus_Zandi.version1.domain.dto.RecordReturnerDto;
-import Focus_Zandi.version1.domain.dto.RecordsDto;
+import Focus_Zandi.version1.domain.dto.*;
 import Focus_Zandi.version1.web.service.RecordService;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,26 +22,17 @@ public class RecordController {
     private final RecordService recordService;
 
     @PostMapping("/send/data")
-    public void receiveRecordV2(@RequestBody RecordsDto recordsDto, HttpServletRequest request) {
+    public int receiveRecord (@RequestBody RecordsDto recordsDto, HttpServletRequest request, HttpServletResponse response) {
         String username = getUsername(request);
         recordService.save(username, recordsDto);
+        return response.getStatus();
     }
 
     @GetMapping("/showRecords")
     public void showTodayRecord(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String username = getUsername(request);
         String timeStamp = LocalDate.now().toString();
-        Records record = recordService.findRecordByTimeStamp(username, timeStamp);
-        if (record == null) {
-            response.setStatus(204);
-            response.sendError(400, "No data");
-            return;
-        }
-        RecordReturnerDto recordReturnerDto = new RecordReturnerDto(record);
-        String json = new Gson().toJson(recordReturnerDto);
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(json);
+        findRecord(username, timeStamp, response);
     }
 
     // 지정 날짜로 검색
@@ -49,7 +40,37 @@ public class RecordController {
     @GetMapping("/showRecords/d")
     public void showRecordByDate(@RequestParam("date") String date, HttpServletRequest request, HttpServletResponse response) throws IOException {
         String username = getUsername(request);
-        Records record = recordService.findRecordByTimeStamp(username, date);
+        findRecord(username, date, response);
+    }
+
+    @GetMapping("/records/monthly")
+    public List<Integer> monthlyRecords(@RequestParam String month, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        List<Integer> monthly = recordService.findMonthly(month, getUsername(request));
+        if (monthly.isEmpty()) {
+            response.sendError(400);
+        }
+        return monthly;
+    }
+
+    // 월별 데이터 반환 (날짜와 총 집중시간)
+    @GetMapping("/records/monthly/v2")
+    public List<MonthlyRecordsDto> monthlyRecordsV2(@RequestParam String month, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        List<MonthlyRecordsDto> monthly = recordService.findMonthlyV2(month, getUsername(request));
+        if (monthly.isEmpty()) {
+            response.sendError(400);
+        }
+        return monthly;
+    }
+
+    //친구 일일 기록
+    //정렬로 보내는건 미구현
+    @GetMapping("/records/friendDailyRanking")
+    public List<MyFollowersDto> dailyRanks(HttpServletRequest request) {
+        return recordService.dailyRanks(getUsername(request));
+    }
+
+    private void findRecord(String username, String timeStamp, HttpServletResponse response) throws IOException {
+        Records record = recordService.findRecordByTimeStamp(username, timeStamp);
         if (record == null) {
             response.setStatus(204);
             response.sendError(400, "No data");

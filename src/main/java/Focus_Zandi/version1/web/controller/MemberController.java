@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,19 +22,13 @@ import java.io.IOException;
 public class MemberController {
     private final MemberService memberService;
 
+    //DTO 수정해서 프론트 요구사항 맞추면 됨
     @GetMapping("/getUserInfo")
     public MemberReturnerDto loginHandler(HttpServletResponse response, HttpServletRequest request) throws IOException {
         String username = getUsername(request);
         Member member = memberService.findMemberByUserName(username);
         MemberReturnerDto memberReturnerDto = new MemberReturnerDto(member, member.getMemberDetails());
         return memberReturnerDto;
-    }
-
-    @GetMapping("/showMember") // 멤버 객체 내용 전체 삭제 예정
-    public Member showMemberV2(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String username = getUsername(request);
-
-        return memberService.findMemberByUserName(username);
     }
 
     @PostMapping("/doFollow")
@@ -48,10 +43,18 @@ public class MemberController {
         return response.getStatus();
     }
 
+    //상세정보 기입 및 수정기능
     @PostMapping("/register")
     public int getDetails(@RequestBody DetailsDto detailsDto, HttpServletRequest request, HttpServletResponse response) {
         memberService.join(detailsDto, getUsername(request));
         return response.getStatus();
+    }
+
+    // 전체 팔로워 조회
+    @GetMapping("/findMyFollowers")
+    public List<String> getFollowers(HttpServletRequest request) {
+        String username = getUsername(request);
+        return memberService.getFollowers(username);
     }
 
     private String getUsername (HttpServletRequest request) {
